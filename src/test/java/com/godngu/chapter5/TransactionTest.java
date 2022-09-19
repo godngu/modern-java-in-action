@@ -4,15 +4,12 @@ import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
+import com.godngu.Trader;
+import com.godngu.Transaction;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
-import java.util.OptionalInt;
 import java.util.Set;
-import java.util.stream.Collectors;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

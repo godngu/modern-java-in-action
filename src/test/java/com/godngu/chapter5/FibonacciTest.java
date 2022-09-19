@@ -1,5 +1,6 @@
 package com.godngu.chapter5;
 
+import com.godngu.Fibonacci;
 import org.junit.jupiter.api.Test;
 
 class FibonacciTest {

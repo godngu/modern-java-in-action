@@ -1,4 +1,4 @@
-package com.godngu.chapter5;
+package com.godngu;
 
 public class Transaction {
 

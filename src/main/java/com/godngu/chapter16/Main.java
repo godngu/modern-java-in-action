@@ -4,6 +4,7 @@ import static java.util.stream.Collectors.toList;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
@@ -23,9 +24,19 @@ public class Main {
     }
 
     private static List<String> findPrices(String product) {
-        return createShops().parallelStream()
-            .map(shop -> String.format("%s price is %.2f", shop.getName(), shop.getPrice(product)))
+        List<CompletableFuture<String>> priceFutures = createShops().stream()
+            .map(shop -> CompletableFuture.supplyAsync(
+                () -> format(shop.getName(), shop.getPrice(product))
+            ))
             .collect(toList());
+
+        return priceFutures.stream()
+            .map(CompletableFuture::join)
+            .collect(toList());
+    }
+
+    private static String format(String name, double price) {
+        return String.format("%s price is %.2f", name, price);
     }
 
     private static List<Shop> createShops() {

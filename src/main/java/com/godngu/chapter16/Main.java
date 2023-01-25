@@ -1,12 +1,40 @@
 package com.godngu.chapter16;
 
+import static java.util.stream.Collectors.toList;
+
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 
 public class Main {
 
     public static void main(String[] args) {
 //        execute();
-        executeAsync();
+//        executeAsync();
+        executeFindPrices();
+    }
+
+    private static void executeFindPrices() {
+        long start = System.nanoTime();
+        System.out.println(findPrices("myPhone27S"));
+        long duration = (System.nanoTime() - start) / 1_000_000;
+        System.out.println("Done in " + duration + " msecs");
+    }
+
+    private static List<String> findPrices(String product) {
+        return createShops().parallelStream()
+            .map(shop -> String.format("%s price is %.2f", shop.getName(), shop.getPrice(product)))
+            .collect(toList());
+    }
+
+    private static List<Shop> createShops() {
+        return Arrays.asList(
+            new Shop("BestPrice"),
+            new Shop("LestsSaveBig"),
+            new Shop("MyFavoriteShop"),
+            new Shop("BuyItAll")
+        );
     }
 
     private static void executeAsync() {

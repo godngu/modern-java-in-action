@@ -4,6 +4,7 @@ import static java.util.stream.Collectors.toList;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -33,8 +34,8 @@ public class TestExecutor {
 
     public void executeFindPrices() {
         long start = System.nanoTime();
-        System.out.println(findPrices("myPhone27S"));
-//        System.out.println(findPricesParallelStream("myPhone27S"));
+//        System.out.println(findPrices("myPhone27S"));
+        System.out.println(findPrices2("myPhone27S"));
         long duration = (System.nanoTime() - start) / 1_000_000;
         System.out.println("Done in " + duration + " msecs");
     }
@@ -44,6 +45,19 @@ public class TestExecutor {
             .map(shop -> shop.getPrice(product))
             .map(Quote::parse)
             .map(Discount::applyDiscount)
+            .collect(toList());
+    }
+
+    private List<String> findPrices2(String product) {
+        List<CompletableFuture<String>> priceFutures = shops.stream()
+            .map(shop -> CompletableFuture.supplyAsync(() -> shop.getPrice(product), executor))
+            .map(future -> future.thenApply(Quote::parse))
+            .map(future -> future.thenCompose(
+                quote -> CompletableFuture.supplyAsync(() -> Discount.applyDiscount(quote), executor)))
+            .collect(toList());
+
+        return priceFutures.stream()
+            .map(CompletableFuture::join)
             .collect(toList());
     }
 

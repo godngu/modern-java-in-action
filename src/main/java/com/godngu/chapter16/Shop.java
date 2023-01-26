@@ -1,5 +1,6 @@
 package com.godngu.chapter16;
 
+import com.godngu.chapter16.Discount.Code;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
@@ -18,8 +19,10 @@ public class Shop {
 
     private final Random random = new Random();
 
-    public double getPrice(String product) {
-         return calculatePrice(product);
+    public String getPrice(String product) {
+        double price = calculatePrice(product);
+        Code code = Code.values()[random.nextInt(Code.values().length)];
+        return String.format("%s:%.2f:%s", name, price, code);
     }
 
     public Future<Double> getPriceAsync(String product) {
